@@ -30,7 +30,28 @@ atoui_done:
 	jr $ra
 
 uitoa:
-    #Define your code here
+	li $t0, 1  			# biggest storeable number + 1
+	blez $a0, uitoa_error		# if 0 or less
+	
+power_loop:
+	beqz $a2, power_done	
+	li $t1, 10			# for mult by 10
+	mult $t0, $t1
+	mflo $t0
+	j power_loop
+		
+power_done:
+	bge $a0, $t0, uitoa_error
+	
+store_loop:
+	
+	
+uitoa_error:
+	move $v0, a1			# return adress
+	li $v1, 0			# return failed
+	jr $ra
+
+uitoa_done:
     li $v0, 0
     li $v1, 0
     

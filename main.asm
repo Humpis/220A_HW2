@@ -12,7 +12,7 @@ str_return: .asciiz "Return: "
 
 # atoui
 atoui_header: .asciiz "\n\n********* atoui *********\n"
-atoui_input: .ascii "723go1"
+atoui_input: .ascii ""
 
 # uitoa
 uitoa_header: .asciiz "\n\n********* uitoa *********\n"
