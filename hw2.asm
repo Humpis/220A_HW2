@@ -81,14 +81,53 @@ uitoa_done:
 ##############################    
             
 decodeRun:
-    #Define your code here
+
+decodeRun_done:
     li $v0, 0
     li $v1, 0
     
     jr $ra
 
 decodedLength:
-    #Define your code here
+	addi $sp, $sp, -12			# save 
+	sw $s0, 0($sp)
+	sw $s1, 4($sp)
+	sw $ra, 8($sp)
+	
+	lb $s0, ($a1)				# char from a1
+	blt $s0, '!', decodedLegnth_error
+	beq $s0, '^', decodedLength_weGoinIn
+	bgt $s0, '*', deconddeLength_error
+
+decodedLength_weGoinIn
+	li $s1, 0				# length
+	
+decodedLength_loop:
+	lb $t2, ($a0)				# char
+	beqz $t2, decodedLength_done		# char is /0
+	beq $t2, $t0, itsAlot			# special cahr foudn
+	addi $s1, $s1, 1			# legnth++
+	addi $a0, $a0, 1			# increment
+	j decodedLenngth_loop
+	
+itsAlot:
+	
+
+decodedLength_error:
+	addi $sp, $sp, 12			# load back
+	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	
+	li $v0, 0
+	jr $ra
+
+decodedLength_done:	
+	addi $sp, $sp, 12			# load back
+	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	
     li $v0, 0
     li $v1, 0
     
