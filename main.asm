@@ -143,7 +143,7 @@ main:
     move $t1, $v1
 
     print_string(str_return)
-    #print_string_reg($t0)   # will cause a crash until uitoa is implemented
+    print_string_reg($t0)   # will cause a crash until uitoa is implemented
     print_newline
     print_string(str_return)
     print_int($t1)
