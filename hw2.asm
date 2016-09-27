@@ -101,6 +101,8 @@ decodedLength:
 
 decodedLength_weGoinIn:
 	li $s1, 0				# length
+	lb $t2, ($a0)				# char
+	beqz $t2, decodedLength_error		# char is /0
 	
 decodedLength_loop:
 	lb $t2, ($a0)				# char
@@ -126,8 +128,8 @@ decodedLength_error:
 	jr $ra
 
 decodedLength_done:	
+	addi $s1, $s1, 1			# add 1 for /0
 	move $v0, $s1
-
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, 8($sp)
