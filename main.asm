@@ -24,8 +24,8 @@ uitoa_outputSize: .word 10
 
 # decodedLength
 decodedLength_header: .asciiz "\n\n********* decodedLength *********\n"
-decodedLength_input: .asciiz ""
-decodedLength_runFlag: .ascii "$"
+decodedLength_input: .asciiz "sss!j4q!F5"
+decodedLength_runFlag: .ascii "!"
 
 # decodeRun
 decodeRun_header: .asciiz "\n\n********* decodeRun *********\n"

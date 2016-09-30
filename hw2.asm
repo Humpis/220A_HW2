@@ -82,13 +82,19 @@ uitoa_done:
 # (char[], int) decodeRun(char letter, int runLength, char[] output)        
 decodeRun:
 	blt $a1, 1, decodeRun_error		# runlength less than 1
-	blt $a0, 'A', decodeRun_error		
-	bgt $a0, 'z', decodeRun_error
-	ble $a0, 'Z', decodeRun_loop
-	bge $a0, 'a', decodeRun_loop
+	lb $t0, ($a0)				# letter to repeat
+	blt $t0, 'A', decodeRun_error		
+	bgt $t0, 'z', decodeRun_error
+	ble $t0, 'Z', decodeRun_loop
+	bge $t0, 'a', decodeRun_loop
 	j decodeRun_error			# is not aphabet letter
 	
 decodeRun_loop:
+	beqz $a1, decodeRun_done		# done
+	sb $t0, ($a2)				# store letter
+	addi $a2, $a2, 1			# increment
+	addi $a1, $a1, -1			# incvrement
+	j decodeRun_loop
 	
 decodeRun_error:
 	move $v0, $a2				# output adress
@@ -96,10 +102,9 @@ decodeRun_error:
 	jr $ra	
 
 decodeRun_done:
-    li $v0, 0
-    li $v1, 0
-    
-    jr $ra
+	move $v0, $a2
+	li $v1, 1    
+	jr $ra
 
 decodedLength:
 	addi $sp, $sp, -12			# save 
