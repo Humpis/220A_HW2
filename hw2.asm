@@ -79,8 +79,21 @@ uitoa_done:
 ##############################
 # PART 2 FUNCTIONS 
 ##############################    
-            
+# (char[], int) decodeRun(char letter, int runLength, char[] output)        
 decodeRun:
+	blt $a1, 1, decodeRun_error		# runlength less than 1
+	blt $a0, 'A', decodeRun_error		
+	bgt $a0, 'z', decodeRun_error
+	ble $a0, 'Z', decodeRun_loop
+	bge $a0, 'a', decodeRun_loop
+	j decodeRun_error			# is not aphabet letter
+	
+decodeRun_loop:
+	
+decodeRun_error:
+	move $v0, $a2				# output adress
+	li $v1, 0				# fsailed
+	jr $ra	
 
 decodeRun_done:
     li $v0, 0
