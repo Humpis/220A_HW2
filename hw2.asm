@@ -153,12 +153,42 @@ decodedLength_done:
 	lw $ra, 8($sp)
 	addi $sp, $sp, 12			# load back
 	jr $ra
-         
-runLengthDecode:
-    #Define your code here
-    li $v0, 0
     
-    jr $ra
+# int runLengthDecode(char[] input, char[] output, int outputSize, char runFlag)   
+runLengthDecode:
+	addi $sp, $sp, -12				# save 
+	sw $s0, 0($sp)
+	sw $s1, 4($sp)
+	sw $ra, 8($sp)
+	
+	lb $s0, ($a3)					# char from a3
+	blt $s0, '!', runLengthDecode_error		
+	beq $s0, '^', runLengthDecode_weGoinIn
+	bgt $s0, '*', runLengthDecode_error
+	
+runLengthDecode_weGoinIn:
+	jal decodedLength	
+	bgt $v0, $a2, runLengthDecode_error		# length is greaster than outputsize
+	
+runLengthDecode_loop:
+	lb $t0, ($a0)					# char of input srting
+	beqz $t0, runLengthDecode_done			# /0 reached 
+
+runLengthDecode_error:
+	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12			# load back
+	li $v0, 0
+	jr $ra
+	
+runLengthDecode_done:
+	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12			# load back
+	li $v0, 1
+	jr $ra
 
 
 ##############################
