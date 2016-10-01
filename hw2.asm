@@ -173,6 +173,27 @@ runLengthDecode_weGoinIn:
 runLengthDecode_loop:
 	lb $t0, ($a0)					# char of input srting
 	beqz $t0, runLengthDecode_done			# /0 reached 
+	beq $t0, $s0, decodeABunch			# flag reached
+	sb $t0, ($a1)					# store letter
+	addi $a1, $a1, 1				# increment output
+	addi $a0, $a0, 1				# increment input
+	j runLengthDecode_loop
+	
+decodeAbunch:
+	addi $sp, $sp, -12				# store 
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	sw $a2, 8($sp) 
+	
+	# put in args and call decodeRun
+	
+	lw $a0, 0($sp)					# load
+	lw $a1, 4($sp)
+	lw $a2, 8($sp) 
+	addi $sp, $sp, 12
+	
+	addi $a0, $a0, 3				# move to next char in input
+	j runLengthDecode_loop
 
 runLengthDecode_error:
 	lw $s0, 0($sp)
