@@ -167,7 +167,14 @@ runLengthDecode:
 	bgt $s0, '*', runLengthDecode_error
 	
 runLengthDecode_weGoinIn:
+	addi $sp, $sp, -8				# save 
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	move $a1, $a3					# runFlag
 	jal decodedLength	
+	lw $a0, 0($sp)
+	lw $a1, 4($sp)
+	addi $sp, $sp, 8				# load 
 	bgt $v0, $a2, runLengthDecode_error		# length is greaster than outputsize
 	
 runLengthDecode_loop:
@@ -179,18 +186,30 @@ runLengthDecode_loop:
 	addi $a0, $a0, 1				# increment input
 	j runLengthDecode_loop
 	
-decodeAbunch:
-	addi $sp, $sp, -12				# store 
+decodeABunch:
+	addi $a0, $a0, 1				# increment to letter from flag
+	la $s1, ($a0)					# string contraining letter
+	addi $a0, $a0, 1				# increment to number from letter
+	# get number with atoui
+	jal atoui
+
+	addi $sp, $sp, -8				# store 
 	sw $a0, 0($sp)
-	sw $a1, 4($sp)
-	sw $a2, 8($sp) 
+#	sw $a1, 4($sp)					output does not need to be stored
+	sw $a2, 4($sp) 
 	
 	# put in args and call decodeRun
+	move $a0, $s1					# char letter
+	move $a2, $a1					# output
+	move $a1, $v0					# number of letters
+
+	jal decodeRun
+	move $a1, $v0					# new output[]
 	
 	lw $a0, 0($sp)					# load
-	lw $a1, 4($sp)
-	lw $a2, 8($sp) 
-	addi $sp, $sp, 12
+#	lw $a1, 4($sp)
+	lw $a2, 4($sp) 
+	addi $sp, $sp, 8
 	
 	addi $a0, $a0, 3				# move to next char in input
 	j runLengthDecode_loop
