@@ -245,10 +245,28 @@ encodeRun:
     jr $ra
 
 encodedLength:
-    #Define your code here
-    li $v0, 0
+	li $t0, 0				# counter
+	lb $t1, ($a0)				# letter
+	beqz $t1, encodedLength_done		# /0 reached
+	addi $a0, $a0, 1			# increment
+	addi $t0, $t0, 1			# counter++
+	
+encodedLength_loop:
+	lb $t2, ($a0)
+	beqz $t2, encodedLength_done		# /0 reached
+	beq $t1, $t2, encodedLength_repeat	# letter repeats
+	addi $t0, $t0, 1			# counter++ becuase new letter
+	move $t1, $t2				# letter 1 = letter 2
+	addi $a0, $a0, 1			# increment input
+	j encodedLength_loop
+	
+encodedLength_repeat:
+	addi $t0, $t0, 1			# counter increment for !. letter is already counted i think
+	# number of letters
     
-    jr $ra        
+encodedLength_done:
+	move $v0, $t0				# counter in v0
+	jr $ra       
 
 runLengthEncode:
     #Define your code here
