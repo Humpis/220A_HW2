@@ -262,9 +262,31 @@ encodedLength_loop:
 	
 encodedLength_repeat:
 	addi $t0, $t0, 1			# counter increment for !. letter is already counted i think
+	li $t3, 1				# repeat counter
 	# number of letters
+	
+encodedLength_repeatLoop:
+	addi $a0, $a0, 1			# increment input
+	lb $t1, ($a0)				
+    	bne $t1, $t2, encodedLength_doneRepeat
+    	addi $t3, $t3, 2			# repeatOCunter++
+    	j encodedLength_repeatLoop
     
+encodedLength_doneRepeat:
+	ble $t3, 2, encodedLength_loop		# 2 
+	addi $t0, $t0, 1			# less than 10
+	blt $t3, 10, encodedLength_loop
+	addi $t0, $t0, 1			# less than 100
+	blt $t3, 100, encodedLength_loop
+	addi $t0, $t0, 1			# less than 1000
+	blt $t3, 1000, encodedLength_loop
+	addi $t0, $t0, 1			# less than 10000
+	blt $t3, 10000, encodedLength_loop
+	addi $t0, $t0, 1			# greater than than 10000
+	j encodedLength_loop	
+	
 encodedLength_done:
+	addi $t0, $t0, 1			# null term
 	move $v0, $t0				# counter in v0
 	jr $ra       
 
