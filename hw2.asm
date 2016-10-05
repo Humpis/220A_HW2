@@ -211,7 +211,7 @@ decodeABunch:
 	lw $a2, 4($sp) 
 	addi $sp, $sp, 8
 	
-	addi $a0, $a0, 3				# move to next char in input
+	#addi $a0, $a0, 1				# move to next char in input
 	j runLengthDecode_loop
 
 runLengthDecode_error:
@@ -223,6 +223,8 @@ runLengthDecode_error:
 	jr $ra
 	
 runLengthDecode_done:
+	li $t0, '\0'					# null term
+	sb $t0, ($a1)					# store null term
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, 8($sp)
