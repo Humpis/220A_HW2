@@ -243,7 +243,7 @@ encodeRun:
 	sw $s1, 4($sp)
 	sw $ra, 8($sp)
 	
-	blt $a1, 1, ecodeRun_error		# runlength less than 1
+	blt $a1, 1, encodeRun_error		# runlength less than 1
 	lb $t0, ($a0)				# letter to repeat
 	blt $t0, 'A', encodeRun_error		
 	bgt $t0, 'z', encodeRun_error
@@ -258,15 +258,22 @@ encodeRun_alphabet:
 	bgt $t1, '*', encodeRun_error
 	
 encodeRun_weGoinIn:
-	ble $a1, 3, encodeRun_small			# runLength ? 3, then runLength copies of letter are written into output
+	ble $a1, 3, encodeRun_small			# runLength < 3, then runLength copies of letter are written into output
 	sb $t1, ($a2)					# store signfier
 	addi $a2, $a2, 1				# inc output
 	sb $t0, ($a2)					# store letter
 	addi $a2, $a2, 1				# inc output
 	# call uitoa and shizzzzz for ukwhat
+
+	move $a0, $a1					# runlength
+	move $a1, $a2					# output
+	li $a2, 10					# outputsize
+	jal uitoa
+	move $a2, $v0					# output from uitoa
+	j encodeRun_done
 	
 encodeRun_small:
-	beq $a1, 1, encodeRun_done			# all letters written
+	beqz $a1, encodeRun_done			# all letters written
 	sb $t0, ($a2)					# store letter
 	addi $a2, $a2, 1				# inc output
 	addi $a1, $a1, -1				# dec num left

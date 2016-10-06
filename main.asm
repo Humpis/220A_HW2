@@ -51,7 +51,7 @@ encodedLength_input: .asciiz "AAAAAAAAAA"
 encodeRun_header: .asciiz "\n\n********* encodeRun *********\n"
 encodeRun_letter: .ascii "G"
 .align 2
-encodeRun_runLength: .word 17
+encodeRun_runLength: .word 12
 encodeRun_output: .asciiz "JASDo823das[23]4[d!!13qdfas21qdqewsf[aes234[faeasdfaaa113"
 encodeRun_runFlag: .ascii "!"
 
