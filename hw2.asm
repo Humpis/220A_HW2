@@ -354,10 +354,46 @@ encodedLength_done:
 	jr $ra       
 
 runLengthEncode:
-    #Define your code here
-    li $v0, 0
-    
-    jr $ra
+	addi $sp, $sp, -12				# save 
+	sw $s0, 0($sp)
+	sw $s1, 4($sp)
+	sw $ra, 8($sp)
+	
+	lb $s0, ($a3)					# char from a3
+	blt $s0, '!', runLengthEncode_error		
+	beq $s0, '^', runLengthEncode_weGoinIn
+	bgt $s0, '*', runLengthEnecode_error
+	
+runLengthEncode_weGoinIn:
+	addi $sp, $sp, -4				# save 
+	sw $a0, 0($sp)
+	jal encodedLength				
+	lw $a0, 0($sp)
+	addi $sp, $sp, 4				# load 
+	blt $a2, $v0, runLengthEncode_error		# output not big enough
+	lb $t0, ($a0)					# first char
+	addi $a0, $a0, 1				# incrmemnt input
+	 
+runLengthEncode_loop:
+	
+	
+	j runLegnthEncode_loop
+	
+runLengthEncode_error:
+    	li $v0, 0
+    	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12				# load 
+	jr $ra
+
+runLengthEncode_done:
+    	li $v0, 1
+    	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12				# load 
+	jr $ra
     
 
 
