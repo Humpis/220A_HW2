@@ -247,7 +247,7 @@ encodeRun:
 encodedLength:
 	li $t0, 0				# counter
 	lb $t1, ($a0)				# letter
-	beqz $t1, encodedLength_done		# /0 reached
+	beqz $t1, encodedLength_error		# /0 reached
 	addi $a0, $a0, 1			# increment
 	addi $t0, $t0, 1			# counter++
 	
@@ -288,6 +288,10 @@ encodedLength_doneRepeat:
 	blt $t3, 10000, encodedLength_loop
 	addi $t0, $t0, 1			# greater than than 10000
 	j encodedLength_loop	
+	
+encodedLength_error:
+	move $v0, $t0				# counter in v0
+	jr $ra  
 	
 encodedLength_done:
 	addi $t0, $t0, 1			# null term

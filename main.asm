@@ -45,7 +45,7 @@ runLengthDecode_runFlag: .ascii "!"
 
 # encodedLength
 encodedLength_header: .asciiz "\n\n********* encodedLength *********\n"
-encodedLength_input: .asciiz "xxhhhhhhhhhhhhhhhuuunnnnnnnrere"
+encodedLength_input: .asciiz "AAAAAAAAAA"
 
 # encodeRun
 encodeRun_header: .asciiz "\n\n********* encodeRun *********\n"
