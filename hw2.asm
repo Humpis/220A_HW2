@@ -238,11 +238,59 @@ runLengthDecode_done:
 ##############################
                 
 encodeRun:
-    #Define your code here
-    li $v0, 0
-    li $v1, 0
-    
-    jr $ra
+	addi $sp, $sp, -12				# save 
+	sw $s0, 0($sp)
+	sw $s1, 4($sp)
+	sw $ra, 8($sp)
+	
+	blt $a1, 1, ecodeRun_error		# runlength less than 1
+	lb $t0, ($a0)				# letter to repeat
+	blt $t0, 'A', encodeRun_error		
+	bgt $t0, 'z', encodeRun_error
+	ble $t0, 'Z', encodeRun_alphabet
+	bge $t0, 'a', encodeRun_alphabet
+	j encodeRun_error			# is not aphabet letter
+	
+encodeRun_alphabet:
+	lb $t1, ($a3)					# runFlag from a3
+	blt $t1, '!', encodeRun_error		
+	beq $t1, '^', encodeRun_weGoinIn
+	bgt $t1, '*', encodeRun_error
+	
+encodeRun_weGoinIn:
+	ble $a1, 3, encodeRun_small			# runLength ? 3, then runLength copies of letter are written into output
+	sb $t1, ($a2)					# store signfier
+	addi $a2, $a2, 1				# inc output
+	sb $t0, ($a2)					# store letter
+	addi $a2, $a2, 1				# inc output
+	# call uitoa and shizzzzz for ukwhat
+	
+encodeRun_small:
+	beq $a1, 1, encodeRun_done			# all letters written
+	sb $t0, ($a2)					# store letter
+	addi $a2, $a2, 1				# inc output
+	addi $a1, $a1, -1				# dec num left
+	j encodeRun_small 	
+	
+encodeRun_error:
+	move $v0, $a2					# adress
+	li $v1, 0					# failed
+		
+	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12				# load 
+	jr $ra
+	
+encodeRun_done:
+	move $v0, $a2					# adress
+	li $v1, 1					# success 
+	
+	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12				# laod
+	jr $ra
 
 encodedLength:
 	li $t0, 0				# counter
