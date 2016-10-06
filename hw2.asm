@@ -372,10 +372,12 @@ runLengthEncode_weGoinIn:
 	addi $sp, $sp, 4				# load 
 	blt $a2, $v0, runLengthEncode_error		# output not big enough
 	lb $t0, ($a0)					# first char
+	beqz $t0, runLengthEnconde_error
 	addi $a0, $a0, 1				# incrmemnt input
 	 
 runLengthEncode_loop:
-	
+	lb $t1, ($a0)					# load a char
+	beqz $t1, runLengthEncode_done			# \0 reached
 	
 	j runLegnthEncode_loop
 	
