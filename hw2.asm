@@ -252,6 +252,7 @@ encodedLength:
 	addi $t0, $t0, 1			# counter++
 	
 encodedLength_loop:
+	#beqz $t1, encodedLength_done		# /0 reached
 	lb $t2, ($a0)
 	beqz $t2, encodedLength_done		# /0 reached
 	beq $t1, $t2, encodedLength_repeat	# letter repeats
@@ -261,19 +262,22 @@ encodedLength_loop:
 	j encodedLength_loop
 	
 encodedLength_repeat:
-	addi $t0, $t0, 1			# counter increment for !. letter is already counted i think
-	li $t3, 1				# repeat counter
+	addi $t0, $t0, 1			# counter increment for ! or letter depending
+	li $t3, 2				# repeat counter
 	# number of letters
 	
 encodedLength_repeatLoop:
 	addi $a0, $a0, 1			# increment input
 	lb $t1, ($a0)				
     	bne $t1, $t2, encodedLength_doneRepeat
-    	addi $t3, $t3, 2			# repeatOCunter++
+    	addi $t3, $t3, 1			# repeatOCunter++
     	j encodedLength_repeatLoop
     
 encodedLength_doneRepeat:
-	ble $t3, 2, encodedLength_loop		# 2 
+	move $t1, $t2				# put old char in t1
+	#addi $a0, $a0, -1			# input--
+	#addi $t0, $t0, 1			# next char is already read
+	blt $t3, 3, encodedLength_loop		# 2 
 	addi $t0, $t0, 1			# less than 10
 	blt $t3, 10, encodedLength_loop
 	addi $t0, $t0, 1			# less than 100
