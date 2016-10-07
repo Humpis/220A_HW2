@@ -362,7 +362,7 @@ runLengthEncode:
 	lb $s0, ($a3)					# char from a3
 	blt $s0, '!', runLengthEncode_error		
 	beq $s0, '^', runLengthEncode_weGoinIn
-	bgt $s0, '*', runLengthEnecode_error
+	bgt $s0, '*', runLengthEncode_error
 	
 runLengthEncode_weGoinIn:
 	addi $sp, $sp, -4				# save 
@@ -372,15 +372,49 @@ runLengthEncode_weGoinIn:
 	addi $sp, $sp, 4				# load 
 	blt $a2, $v0, runLengthEncode_error		# output not big enough
 	lb $t0, ($a0)					# first char
-	beqz $t0, runLengthEnconde_error
+	beqz $t0, runLengthEncode_error
 	addi $a0, $a0, 1				# incrmemnt input
-	 
+	#sb $t0, ($a1)					# store first letter, to be possibly removed
+	li $t3, 1					# counter 
+		 
 runLengthEncode_loop:
 	lb $t1, ($a0)					# load a char
+	bne $t0, $t1, runLengthEncode_repeatDone	# repeat done
+	beqz $t1, runLengthEncode_done			# \0 reached
+
+	#addi $a1, $a1, 1				# inc output
+	#sb $t0, ($a1)					# store letter
+	addi $a0, $a0, 1				# inc input
+	move $t0, $t1					# put new into old
+	addi $t3, $t3, 1				# counter++
+	j runLengthEncode_loop
+	
+runLengthEncode_repeatDone:
+	addi $sp, $sp, -8				# save 
+	sw $a0, 0($sp)
+	sw $t1, 4($sp)
+
+	addi $a0, $a0, -1				# letter to repeat
+	move $a2, $a1					# output
+	move $a1, $t3					# runlegnth
+	jal encodeRun
+	move $a1, $v0					# output
+	
+	
+	lw $a0, 0($sp)
+	lw $t1, 4($sp)
+	addi $sp, $sp, 8
+	addi $a0, $a0, 1				# inc input
+	
 	beqz $t1, runLengthEncode_done			# \0 reached
 	
-	j runLegnthEncode_loop
+	move $t0, $t1					# put the new letter in old
 	
+	
+	li $t3, 1					# reset counter
+	
+	j runLengthEncode_loop
+
 runLengthEncode_error:
     	li $v0, 0
     	lw $s0, 0($sp)
@@ -390,6 +424,10 @@ runLengthEncode_error:
 	jr $ra
 
 runLengthEncode_done:
+	li $t4, '\0'
+	sb $t4, ($a1)
+	
+	
     	li $v0, 1
     	lw $s0, 0($sp)
 	lw $s1, 4($sp)

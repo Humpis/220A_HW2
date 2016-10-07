@@ -58,11 +58,11 @@ encodeRun_runFlag: .ascii "!"
 
 # runLengthEncode
 runLengthEncode_header: .asciiz "\n\n********* runLengthEncode *********\n"
-runLengthEncode_input: .asciiz "AAAhhhhhhhabc"
+runLengthEncode_input: .asciiz "h"
 runLengthEncode_output: .asciiz "f78raewkuiO*A&*(QAWE2qp8947kjdfs244"
 .align 2
-runLengthEncode_outputSize: .word 10
-runLengthEncode_runFlag: .ascii "*"
+runLengthEncode_outputSize: .word 11
+runLengthEncode_runFlag: .ascii "!"
 
 
 # Constants
